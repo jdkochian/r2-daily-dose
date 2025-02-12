@@ -1,0 +1,4 @@
+- Write a function to get the top 10 clips from a given day
+- Write a concurrent function that takes a list of clip urls and uses yt-dlp to download them 
+- Write a function to stitch the mp4 videos into a video with credit 
+- Write a function to upload the video to youtube
