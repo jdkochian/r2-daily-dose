@@ -11,8 +11,8 @@ for i, clip in enumerate(clips):
 
     # todo: pass in the clip title, put in bottom left corner, figure out how to do multiline with the channel
     text = TextClip(font='Courier', text=clip_paths[i].split('.')[0], font_size=150, color='white', stroke_color='black', stroke_width=5, horizontal_align='center', vertical_align='center', duration=2.5)
-    clips[i] = CompositeVideoClip([clip, text])
+    clips[i] = CompositeVideoClip([clip, text]).with_audio(clips[i].audio)
 
 
-final_video = concatenate_videoclips(clips, method='compose') 
-final_video.write_videofile('test.mp4')
+final_video = concatenate_videoclips(clips, method='compose')
+final_video.write_videofile('test.mp4', audio=True, audio_codec='aac')
