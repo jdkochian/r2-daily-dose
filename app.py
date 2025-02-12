@@ -2,6 +2,7 @@ import requests
 import os
 from dotenv import load_dotenv
 import yt_dlp
+from datetime import datetime, timedelta, timezone
 
 load_dotenv()
 
@@ -10,30 +11,33 @@ APP_TOKEN = os.getenv('TWITCH_ACCESS_TOKEN')
 
 RIVALS_GAME_ID = 330654616
 
-
-url = 'https://api.twitch.tv/helix/clips'
-
-params = {
-    "game_id": RIVALS_GAME_ID, 
-    "first": 5, 
-    "started_at": "2025-02-12T00:00:00Z"
-}
+TWITCH_CLIPS_ENDPOINT = 'https://api.twitch.tv/helix/clips'
 
 headers = { 
     "Authorization": f"Bearer {APP_TOKEN}",
     "Client-Id": CLIENT_ID
 }
 
-response = requests.get(url, params=params, headers=headers)
+# response = requests.get(url, params=params, headers=headers)
 
-# snippet on how to download a clip
+def get_top_clips(date : datetime): 
+    response = requests.get(TWITCH_CLIPS_ENDPOINT, params={'game_id': RIVALS_GAME_ID, 'first': 5, 'started_at': date.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()}, headers=headers)
+    if (response.ok): 
+        clip_data = response.json()['data']
+        # todo: parallelize this
+        for clip in clip_data: 
+            download_clip(clip['url'], clip['id'])
 
-# ydl_opts = {
-#         'outtmpl': 'test.mp4',  # Output filename
-#         'format': 'mp4'  # Ensure MP4 format
-# }
+        # todo: stitch clips together, add text with clip title and creator, upload
+    
+def download_clip(clip_url : str, clip_id): 
+    ydl_opts = {
+        'outtmpl': f'clips/{clip_id}.mp4', 
+        'format': 'mp4'
+    }
 
-# with yt_dlp.YoutubeDL(ydl_opts) as ydl: 
-#     ydl.download('https://clips.twitch.tv/AwkwardAgileDelicataPeteZaroll-dx7n-9atBk7TYB4Z')
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl: 
+        ydl.download(clip_url)
 
-# print(response.json()['data'][0])
+yesterday = datetime.now(timezone.utc) - timedelta(days=1)
+# get_top_clips(yesterday)
