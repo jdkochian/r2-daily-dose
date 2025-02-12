@@ -1,2 +1,2 @@
-- Write a function to stitch the mp4 videos into a video with credit 
-- Write a function to upload the video to youtube
+- Edit the videos such that they have title and channel in the bottom left corner ⏳
+- Write a function to upload the video to a youtube channel 

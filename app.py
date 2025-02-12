@@ -18,8 +18,6 @@ headers = {
     "Client-Id": CLIENT_ID
 }
 
-# response = requests.get(url, params=params, headers=headers)
-
 def get_top_clips(date : datetime): 
     response = requests.get(TWITCH_CLIPS_ENDPOINT, params={'game_id': RIVALS_GAME_ID, 'first': 5, 'started_at': date.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()}, headers=headers)
     if (response.ok): 
