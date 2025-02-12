@@ -1,1 +1,1 @@
-# r2-daily-dose
+# Daily Dose of Rivals of Aether 2
