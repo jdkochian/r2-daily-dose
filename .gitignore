@@ -5,3 +5,6 @@
 /clips/
 
 *.mp4
+
+client_secret.json
+token.pickle
