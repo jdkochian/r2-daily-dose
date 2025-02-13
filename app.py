@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 import yt_dlp
 from datetime import datetime, timedelta, timezone
+from editing import combine_clips
 
 load_dotenv()
 
@@ -19,14 +20,14 @@ headers = {
 }
 
 def get_top_clips(date : datetime): 
-    response = requests.get(TWITCH_CLIPS_ENDPOINT, params={'game_id': RIVALS_GAME_ID, 'first': 5, 'started_at': date.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()}, headers=headers)
+    response = requests.get(TWITCH_CLIPS_ENDPOINT, params={'game_id': RIVALS_GAME_ID, 'first': 10, 'started_at': date.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()}, headers=headers)
     if (response.ok): 
         clip_data = response.json()['data']
         # todo: parallelize this
         for clip in clip_data: 
             download_clip(clip['url'], clip['id'])
-
-        # todo: stitch clips together, add text with clip title and creator, upload
+        
+        combine_clips(clip_data)
     
 def download_clip(clip_url : str, clip_id): 
     ydl_opts = {
@@ -38,4 +39,4 @@ def download_clip(clip_url : str, clip_id):
         ydl.download(clip_url)
 
 yesterday = datetime.now(timezone.utc) - timedelta(days=1)
-# get_top_clips(yesterday)
+get_top_clips(yesterday)

@@ -1,18 +1,14 @@
 from moviepy import VideoFileClip, concatenate_videoclips, TextClip, CompositeVideoClip
 
-clip_paths = ['ImpossibleCourageousDoveRedCoat-qPs0f8_xBR5d7S_y.mp4', 'PiercingSavoryCougarAsianGlow-g6GvcBSCYaPsyJS2.mp4']
+def combine_clips(clip_data): 
+    clips = [VideoFileClip(f"./clips/{clip['id']}.mp4") for clip in clip_data]
 
-# snippet for stitching together the clips and adding text
+    for i, clip in enumerate(clips): 
+        clip = clip.resized((1920, 1080))
+        # todo: multiline with title and channel
+        text = TextClip(font='Courier', text=f"twitch.tv/{clip_data[i]['broadcaster_name']}", font_size=100, color='white', stroke_color='purple', stroke_width=5, horizontal_align='center', vertical_align='center', duration=2.5).with_position(('left', 'bottom'))
 
-clips = [VideoFileClip(f'./clips/{video}') for video in clip_paths]
+        clips[i] = CompositeVideoClip([clip, text]).with_audio(clips[i].audio)
 
-for i, clip in enumerate(clips): 
-    clip = clip.resized((1920, 1080))
-
-    # todo: pass in the clip title, put in bottom left corner, figure out how to do multiline with the channel
-    text = TextClip(font='Courier', text=clip_paths[i].split('.')[0], font_size=150, color='white', stroke_color='black', stroke_width=5, horizontal_align='center', vertical_align='center', duration=2.5)
-    clips[i] = CompositeVideoClip([clip, text]).with_audio(clips[i].audio)
-
-
-final_video = concatenate_videoclips(clips, method='compose')
-final_video.write_videofile('test.mp4', audio=True, audio_codec='aac')
+    final_video = concatenate_videoclips(clips, method='compose')
+    final_video.write_videofile('test.mp4', audio=True, audio_codec='aac')

@@ -1,2 +1,1 @@
-- Edit the videos such that they have title and channel in the bottom left corner ⏳
 - Write a function to upload the video to a youtube channel 
