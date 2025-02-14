@@ -12,3 +12,4 @@ def combine_clips(clip_data):
 
     final_video = concatenate_videoclips(clips, method='compose')
     final_video.write_videofile('test.mp4', audio=True, audio_codec='aac')
+    return 'test.mp4'

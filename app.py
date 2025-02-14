@@ -5,6 +5,7 @@ import yt_dlp
 from datetime import datetime, timedelta, timezone
 import pytz
 from editing import combine_clips
+from upload_video import upload_video
 
 load_dotenv()
 
@@ -24,11 +25,24 @@ def get_top_clips(date : datetime):
     response = requests.get(TWITCH_CLIPS_ENDPOINT, params={'game_id': RIVALS_GAME_ID, 'first': 10, 'started_at': date.replace(hour=0, minute=0, second=0, microsecond=0).isoformat(), 'ended_at': date.replace(hour=23, minute=59, second=59, microsecond=59).isoformat()}, headers=headers)
     if (response.ok): 
         clip_data = response.json()['data']
+
         # todo: parallelize this
         for clip in clip_data: 
             download_clip(clip['url'], clip['id'])
         
-        combine_clips(clip_data)
+        filepath = combine_clips(clip_data)
+
+        title = f"{clip_data[0]['title']} ({clip_data[0]['broadcaster_name']}) - Rivals of Aether 2 Highlights {date.strftime('%m/%d')}"
+        description=f"""Top Rivals of Aether 2 Clips from {date.strftime('%m/%d/%Y')}\n\nLike and subscribe\n"""
+
+        offset = 0 
+        for clip in clip_data: 
+            description += f"""{(str(int(offset / 60)) + ':') if offset > 60 else '0:'}{int(offset % 60):02} {clip['title']} - twitch.tv/{clip['broadcaster_name']}\n"""
+            offset += clip['duration']
+
+        description += "\nAll clips are retrieved, edited, and credited by a program. If you have concerns or would like content removed, please comment and I will do so. "
+
+        upload_video(filepath, title, description, ['rivals2'])
     
 def download_clip(clip_url : str, clip_id): 
     ydl_opts = {

@@ -46,12 +46,10 @@ def upload_video(file_path, title, description, tags):
                 "tags": tags,
                 "categoryId": "20"  
             },
-            "status": {"privacyStatus": "public"}  # Change to 'private' if needed
+            "status": {"privacyStatus": "private"}  
         },
         media_body=MediaFileUpload(file_path, resumable=True)
     )
     response = request.execute()
     print("Uploaded video ID:", response["id"])
 
-
-upload_video('test.mp4', 'Test Upload', 'Test Description', 'test_tag')
