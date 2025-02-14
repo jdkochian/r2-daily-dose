@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 import yt_dlp
 from datetime import datetime, timedelta, timezone
+import pytz
 from editing import combine_clips
 
 load_dotenv()
@@ -20,7 +21,7 @@ headers = {
 }
 
 def get_top_clips(date : datetime): 
-    response = requests.get(TWITCH_CLIPS_ENDPOINT, params={'game_id': RIVALS_GAME_ID, 'first': 10, 'started_at': date.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()}, headers=headers)
+    response = requests.get(TWITCH_CLIPS_ENDPOINT, params={'game_id': RIVALS_GAME_ID, 'first': 10, 'started_at': date.replace(hour=0, minute=0, second=0, microsecond=0).isoformat(), 'ended_at': date.replace(hour=23, minute=59, second=59, microsecond=59).isoformat()}, headers=headers)
     if (response.ok): 
         clip_data = response.json()['data']
         # todo: parallelize this
@@ -38,5 +39,10 @@ def download_clip(clip_url : str, clip_id):
     with yt_dlp.YoutubeDL(ydl_opts) as ydl: 
         ydl.download(clip_url)
 
-yesterday = datetime.now(timezone.utc) - timedelta(days=1)
+
+est = pytz.timezone("America/New_York")
+yesterday = datetime.now(est) - timedelta(days=1)
+
+
 get_top_clips(yesterday)
+# print(yesterday)
