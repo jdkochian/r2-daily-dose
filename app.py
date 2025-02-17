@@ -2,7 +2,7 @@ import requests
 import os
 from dotenv import load_dotenv
 import yt_dlp
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 import pytz
 from editing import combine_clips
 from upload_video import upload_video
@@ -33,14 +33,15 @@ def get_top_clips(date : datetime):
         filepath = combine_clips(clip_data)
 
         title = f"{clip_data[0]['title']} ({clip_data[0]['broadcaster_name']}) - Rivals of Aether 2 Highlights {date.strftime('%m/%d')}"
-        description=f"""Top Rivals of Aether 2 Clips from {date.strftime('%m/%d/%Y')}\n\nLike and subscribe\n"""
+        description=f"""Top Rivals of Aether 2 Clips from {date.strftime('%m/%d/%Y')}\n\n"""
 
         offset = 0 
         for clip in clip_data: 
-            description += f"""{(str(int(offset / 60)) + ':') if offset > 60 else '0:'}{int(offset % 60):02} {clip['title']} - twitch.tv/{clip['broadcaster_name']}\n"""
+            description += f"""{int(offset / 60):02}:{int(offset % 60):02} {clip['title']} - twitch.tv/{clip['broadcaster_name']}\n"""
             offset += clip['duration']
 
-        description += "\nAll clips are retrieved, edited, and credited by a program. If you have concerns or would like content removed, please comment and I will do so. "
+        description += "\nLike and Subscribe\n\n"
+        description += "All clips are retrieved, edited, and credited by a program. If you have concerns or would like content removed, please comment and I will do so. "
 
         upload_video(filepath, title, description, ['rivals2'])
     
