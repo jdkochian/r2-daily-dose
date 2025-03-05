@@ -46,7 +46,7 @@ def upload_video(file_path, title, description, tags):
                 "tags": tags,
                 "categoryId": "20"  
             },
-            "status": {"privacyStatus": "private"}  
+            "status": {"privacyStatus": "public"}  
         },
         media_body=MediaFileUpload(file_path, resumable=True)
     )
