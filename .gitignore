@@ -8,5 +8,6 @@
 
 client_secret.json
 token.pickle
+resume.json
 
 __pycache__/
