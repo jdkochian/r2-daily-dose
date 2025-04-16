@@ -67,7 +67,7 @@ def download_clip(clip_url : str, clip_id):
 def upload_from_resumable(): 
     filepath = 'test.mp4'
     with open('resume.json', 'r') as jsonFile: 
-        data = json.loads(jsonFile)
+        data = json.load(jsonFile)
 
     description = data['description']
     title = data['title']

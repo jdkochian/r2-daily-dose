@@ -1,4 +1,2 @@
-- clear clips folder and test after upload 
 - better file name than test.mp4
-- cache results in case of failure so its deterministic 
 - deploy somewhere
